@@ -1,113 +1,120 @@
-import Image from "next/image";
+"use client";
+import Head from "next/head";
+import Navbar from "../components/Navbar";
+import { motion, useAnimation } from "framer-motion";
+import { useEffect } from "react";
+import { BackgroundGradient } from "@/components/ui/background-gradient";
+import { ReactTyped } from "react-typed";
 
 export default function Home() {
+  const controls = useAnimation();
+
+  const words = ["Занимается спортом", "Ищет новые знакомства", "Любит пиво"];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const parallax = document.querySelector(".parallax") as HTMLElement;
+      if (parallax) {
+        const scrolled = window.pageYOffset;
+        const parallaxSpeed = 0.5;
+        parallax.style.transform = `translateY(${scrolled * parallaxSpeed}px)`;
+      }
+
+      const triggerHeight = window.innerHeight * 0.7;
+      const values = document.querySelectorAll(".value-card");
+      values.forEach((value) => {
+        const rect = value.getBoundingClientRect();
+        if (rect.top <= triggerHeight) {
+          controls.start({ opacity: 1, y: 0 });
+        }
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [controls]);
+
+  const valueVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
+    <div>
+      <Head>
+        <title>Слономойка</title>
+      </Head>
+      <Navbar />
+      <div
+        className="parallax min-h-screen bg-cover bg-center"
+        style={{ backgroundImage: "url(/bgsecond.jpg)" }}
+      >
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          className="flex flex-col items-center justify-center h-screen text-white text-center px-4"
+        >
+          <div className="text-right">
+            <h1 className="text-5xl md:text-7xl font-bold">Слономойка</h1>
+            <p className="text-2xl md:text-4xl">у Алисы</p>
+          </div>
+          <p className="mt-24 font-semibold text-2xl md:text-5xl">
+            Сообщество для тех, кто{" "}
+            <ReactTyped
+              strings={[
+                "Занимается спортом",
+                "Ищет новые знакомства",
+                "Любит пиво))",
+              ]}
+              typeSpeed={100}
+              backSpeed={50}
+              loop
             />
-          </a>
+          </p>
+        </motion.div>
+      </div>
+      <div id="values" className="bg-white text-center py-12 relative z-10">
+        <h2 className="text-2xl md:text-3xl font-bold mb-8">
+          Ценности сообщества
+        </h2>
+        <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 container mx-auto px-4">
+          {[
+            {
+              title: "Самореализация",
+              description:
+                "это то, на что ты тратишь своё драгоценное время и как ты его тратишь, для нас также важно. Будь ты строителем или разработчиком, время, которые ты тратишь на своё развитие мы ценим, уважаем и поддерживаем.",
+            },
+            {
+              title: "Люди",
+              description:
+                "это ты, это я, это мы. Мы все разные и каждого человека на своем пути мы благодарим и радуемся, что он поделился своим опытом, знанием, улыбкой.",
+            },
+            {
+              title: "Самоактуализация",
+              description:
+                "то, к чему не многие из нас пришли до конца, но возможно как раз это изменится на Слономойке. Найти своих людей, чтобы понять кто ты, то, что движет нами и заставляет вновь и вновь задуматься.",
+            },
+            {
+              title: "Счастье",
+              description:
+                "Жить эту жизнь - мы все с вами уже прошли какой-то путь и он нас с вами привел в эту точку, а в ней, мы почему-то хотим наслаждаться и радоваться. В этой точке, результат для нас менее интересен, чем сам процесс.",
+            },
+            {
+              title: "Наследие",
+              description:
+                "Самая важная объединяющая, которая будет трансформироваться у каждого в своё. Может ты захочешь запустить с нами хакатон, может ты решишь пробежать марафон или взобраться на Эльбрус. Это культурный код, который объединяет наше сообщество, мы ни ждем, что будем частью чего-то, мы стремимся сделать все вокруг частью себя и своего мира.",
+            },
+          ].map((value, index) => (
+            <BackgroundGradient key={index} className="text-white p-4">
+              <h3 className="text-xl md:text-2xl font-semibold mb-4">
+                {value.title}
+              </h3>
+              <p className="text-base md:text-lg">{value.description}</p>
+            </BackgroundGradient>
+          ))}
         </div>
       </div>
-
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </div>
   );
 }
