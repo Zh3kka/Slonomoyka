@@ -2,15 +2,21 @@
 import Head from "next/head";
 import Navbar from "../components/Navbar";
 import { motion, useAnimation } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { BackgroundGradient } from "@/components/ui/background-gradient";
 import { ReactTyped } from "react-typed";
 
 export default function Home() {
   const controls = useAnimation();
+  const [isFlipped, setIsFlipped] = useState(false);
 
-  const words = ["Занимается спортом", "Ищет новые знакомства", "Любит пиво"];
+  const handleMouseEnter = () => {
+    setIsFlipped(true);
+  };
 
+  const handleMouseLeave = () => {
+    setIsFlipped(false);
+  };
   useEffect(() => {
     const handleScroll = () => {
       const parallax = document.querySelector(".parallax") as HTMLElement;
@@ -33,11 +39,6 @@ export default function Home() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [controls]);
-
-  const valueVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0 },
-  };
 
   return (
     <div>
@@ -62,11 +63,7 @@ export default function Home() {
           <p className="mt-24 font-semibold text-2xl md:text-5xl">
             Сообщество для тех, кто{" "}
             <ReactTyped
-              strings={[
-                "Занимается спортом",
-                "Ищет новые знакомства",
-                "Любит пиво))",
-              ]}
+              strings={["работает в IT", "осознал свои ценности", "про людей"]}
               typeSpeed={100}
               backSpeed={50}
               loop
@@ -107,10 +104,14 @@ export default function Home() {
             },
           ].map((value, index) => (
             <BackgroundGradient key={index} className="text-white p-4">
-              <h3 className="text-xl md:text-2xl font-semibold mb-4">
-                {value.title}
-              </h3>
-              <p className="text-base md:text-lg">{value.description}</p>
+              <div className="front">
+                <h3 className="text-xl md:text-2xl font-semibold mb-4">
+                  {value.title}
+                </h3>
+              </div>
+              <div className="back">
+                <p className="text-base md:text-lg">{value.description}</p>
+              </div>
             </BackgroundGradient>
           ))}
         </div>
